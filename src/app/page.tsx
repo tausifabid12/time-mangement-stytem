@@ -1,103 +1,233 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from 'react';
+
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { Clock, Target, CircleCheck as CheckCircle, TrendingUp, Calendar } from 'lucide-react';
+import { formatTime, secondsToMinutes } from './lib/time-utils';
+import { Separator } from '@/components/ui/separator';
+import { Task } from './types/task';
+import { CreateTaskModal } from './components/create-task-modal';
+import { TaskItem } from './components/task-item';
+import { TimerScreen } from './components/timer-screen';
+import { useTasks } from './hooks/use-tasks';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { tasks, addTask, updateTask, deleteTask } = useTasks();
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const handleStartTask = (task: Task) => {
+    // Pause any other active tasks
+    tasks.forEach(t => {
+      if (t.id !== task.id && t.isActive) {
+        updateTask(t.id, { isActive: false, isPaused: true });
+      }
+    });
+
+    // Toggle the selected task
+    if (task.isActive) {
+      updateTask(task.id, { isActive: false, isPaused: true });
+    } else {
+      updateTask(task.id, { isActive: true, isPaused: false });
+      setActiveTask({ ...task, isActive: true });
+    }
+  };
+
+  const handleCompleteTask = (id: string) => {
+    updateTask(id, {
+      isCompleted: true,
+      isActive: false,
+      isPaused: false,
+      completedAt: new Date()
+    });
+  };
+
+  const activeTasks = tasks.filter(task => !task.isCompleted);
+  const completedTasks = tasks.filter(task => task.isCompleted);
+  const totalTimeToday = tasks.reduce((acc, task) => acc + task.timeSpent, 0);
+  const tasksCompletedToday = completedTasks.length;
+  const currentActiveTask = tasks.find(task => task.isActive);
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      {/* Background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" />
+
+      <div className="relative z-10 container mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                TaskFlow
+              </h1>
+              <p className="text-gray-400 text-lg mt-2">Focus. Track. Achieve.</p>
+            </div>
+            <CreateTaskModal onCreateTask={addTask} />
+          </div>
+
+          {/* Stats cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <Card className="bg-gray-900/50 border-gray-800">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-emerald-500/20 rounded-lg">
+                    <Clock className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Time Today</p>
+                    <p className="text-white font-semibold">{formatTime(totalTimeToday)}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-900/50 border-gray-800">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/20 rounded-lg">
+                    <Target className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Active Tasks</p>
+                    <p className="text-white font-semibold">{activeTasks.length}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-900/50 border-gray-800">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-500/20 rounded-lg">
+                    <CheckCircle className="w-5 h-5 text-green-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Completed</p>
+                    <p className="text-white font-semibold">{tasksCompletedToday}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-900/50 border-gray-800">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-500/20 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Productivity</p>
+                    <p className="text-white font-semibold">
+                      {tasks.length > 0 ? Math.round((tasksCompletedToday / tasks.length) * 100) : 0}%
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Active/In Progress Tasks */}
+        {activeTasks.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Target className="w-5 h-5 text-emerald-400" />
+              <h2 className="text-xl font-semibold text-white">Active Tasks</h2>
+              <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                {activeTasks.length}
+              </Badge>
+            </div>
+
+            <div className="grid gap-4">
+              {activeTasks.map(task => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  onStart={handleStartTask}
+                  onComplete={handleCompleteTask}
+                  onDelete={deleteTask}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Completed Tasks */}
+        {completedTasks.length > 0 && (
+          <div>
+            <Separator className="my-8 bg-gray-800" />
+
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <h2 className="text-xl font-semibold text-white">Completed Tasks</h2>
+              <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30">
+                {completedTasks.length}
+              </Badge>
+            </div>
+
+            <div className="grid gap-4">
+              {completedTasks.map(task => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  onStart={handleStartTask}
+                  onComplete={handleCompleteTask}
+                  onDelete={deleteTask}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {tasks.length === 0 && (
+          <Card className="bg-gray-900/50 border-gray-800">
+            <CardContent className="p-12 text-center">
+              <div className="mb-6">
+                <div className="mx-auto w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
+                  <Calendar className="w-12 h-12 text-emerald-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">No tasks yet</h3>
+                <p className="text-gray-400 max-w-md mx-auto">
+                  Create your first task to start tracking your time and boosting productivity.
+                  Set a goal, start the timer, and watch your progress unfold.
+                </p>
+              </div>
+              <CreateTaskModal onCreateTask={addTask} />
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Full screen timer */}
+      {activeTask && (
+        <TimerScreen
+          task={activeTask}
+          onClose={() => setActiveTask(null)}
+          onUpdateTask={updateTask}
+        />
+      )}
+
+      {/* Show timer for currently active task */}
+      {currentActiveTask && !activeTask && (
+        <TimerScreen
+          task={currentActiveTask}
+          onClose={() => setActiveTask(null)}
+          onUpdateTask={updateTask}
+        />
+      )}
     </div>
   );
 }
