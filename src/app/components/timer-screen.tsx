@@ -125,7 +125,7 @@ export const TimerScreen = ({ task, onClose, onUpdateTask }: TimerScreenProps) =
 
     return (
         <div
-            className="fixed inset-0 bg-black z-50 cursor-pointer overflow-hidden"
+            className="fixed overflow-hidden inset-0 bg-black z-50 cursor-pointer "
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -153,36 +153,15 @@ export const TimerScreen = ({ task, onClose, onUpdateTask }: TimerScreenProps) =
                 {/* Timer display - compact for small window */}
                 <div className={cn(
                     "font-mono font-bold leading-none select-none",
-                    "text-6xl sm:text-7xl md:text-8xl",
+                    "text-6xl sm:text-5xl md:text-6xl",
                     isOvertime ? "text-red-400" : "text-emerald-400"
                 )}>
                     {isOvertime ? '+' : ''}{formatTime(displayTime)}
                 </div>
 
-                {/* Minimal status indicator */}
-                {/* <div className="mt-4">
-                    <div className={cn(
-                        "flex items-center gap-2 px-3 py-1 rounded-full transition-all duration-300",
-                        isRunning
-                            ? "bg-emerald-500/20 text-emerald-400"
-                            : "bg-gray-500/20 text-gray-400"
-                    )}>
-                        {isRunning ? (
-                            <>
-                                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                                <span className="text-sm font-medium">Running</span>
-                            </>
-                        ) : (
-                            <>
-                                <Pause className="w-3 h-3" />
-                                <span className="text-sm font-medium">Paused</span>
-                            </>
-                        )}
-                    </div>
-                </div> */}
-
+     
                 {/* Progress bar - minimal and always visible */}
-                <div className="mt-6 w-48 bg-gray-700/30 rounded-full h-1 overflow-hidden">
+                <div className="mt-2 w-48 bg-gray-700/30 rounded-full h-1 overflow-hidden">
                     <div
                         className={cn(
                             "h-full transition-all duration-500",
@@ -220,67 +199,68 @@ export const TimerScreen = ({ task, onClose, onUpdateTask }: TimerScreenProps) =
                     <div className="flex justify-center gap-2 mb-1">
                         <Button
                             variant="outline"
-                            size="sm"
+                                  size="icon"
                             onClick={() => adjustTime(-30)}
-                            className="border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm w-12 h-8 p-0"
+                            className="border-gray-500 text-[11px] py-0 h-7 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm px-1"
                         >
                             -30m
                         </Button>
                         <Button
                             variant="outline"
-                            size="sm"
+                            size="icon"
                             onClick={() => adjustTime(-10)}
-                            className="border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm w-12 h-8 p-0"
+                            className="border-gray-500 text-[11px] py-0 h-7 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm px-1 "
                         >
                             -10m
                         </Button>
                         <Button
                             variant="outline"
-                            size="sm"
+                                  size="icon"
                             onClick={() => adjustTime(10)}
-                            className="border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm w-12 h-8 p-0"
+                            className="border-gray-500 text-[11px] py-0 h-7 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm px-1"
                         >
                             +10m
                         </Button>
                         <Button
                             variant="outline"
-                            size="sm"
+                                  size="icon"
                             onClick={() => adjustTime(30)}
-                            className="border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm w-12 h-8 p-0"
+                            className="border-gray-500 text-[11px] py-0 h-7 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm px-1"
                         >
                             +30m
                         </Button>
                     </div>
 
                     {/* Main control buttons - compact layout */}
-                    <div className="flex justify-center gap-3">
+                    <div className="flex justify-center gap-3 mt-2">
                         <Button
                             onClick={handleClose}
                             variant="outline"
-                            className="border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm"
+                            className="border-gray-500 text-gray-300 hover:bg-gray-700 hover:text-white bg-black/50 backdrop-blur-sm text-[11px] py-0 h-7"
                         >
                             <X className="w-4 h-4" />
                         </Button>
 
                         <Button
                             onClick={handlePlayPause}
+                            size={"icon"}
                             className={cn(
-                                "text-white transition-all duration-200 backdrop-blur-sm",
+                                "text-white transition-all duration-200 backdrop-blur-sm text-[11px] py-0 h-7" ,
                                 isRunning
                                     ? "bg-amber-600/80 hover:bg-amber-700"
                                     : "bg-emerald-600/80 hover:bg-emerald-700"
                             )}
                         >
                             {isRunning ? (
-                                <Pause className="w-4 h-4" />
+                                <Pause className="w-2 h-2" />
                             ) : (
-                                <Play className="w-4 h-4" />
+                                <Play className="w-2 h-2" />
                             )}
                         </Button>
 
                         <Button
                             onClick={handleComplete}
-                            className="bg-green-600/80 hover:bg-green-700 text-white backdrop-blur-sm"
+                            className="bg-green-600/80 hover:bg-green-700 text-white backdrop-blur-sm text-[11px] py-0 h-7"
                         >
                             <Check className="w-4 h-4" />
                         </Button>

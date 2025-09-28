@@ -196,3 +196,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+html,
+body {
+  overflow: hidden; /* disables scrollbars */
+  height: 100%;     /* ensures full page height */
+}
