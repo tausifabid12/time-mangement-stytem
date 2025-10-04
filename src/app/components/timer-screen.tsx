@@ -153,7 +153,7 @@ export const TimerScreen = ({ task, onClose, onUpdateTask }: TimerScreenProps) =
                 {/* Timer display - compact for small window */}
                 <div className={cn(
                     "font-mono font-bold leading-none select-none",
-                    "text-6xl sm:text-3xl md:text-4xl",
+                    "text-6xl sm:text-2xl md:text-3xl",
                     isOvertime ? "text-red-400" : "text-emerald-400"
                 )}>
                     {isOvertime ? '+' : ''}{formatTime(displayTime)}

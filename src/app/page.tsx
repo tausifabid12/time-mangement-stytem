@@ -13,6 +13,7 @@ import { CreateTaskModal } from './components/create-task-modal';
 import { TaskItem } from './components/task-item';
 import { TimerScreen } from './components/timer-screen';
 import { useTasks } from './hooks/use-tasks';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function Home() {
   const { tasks, addTask, updateTask, deleteTask } = useTasks();
@@ -63,9 +64,8 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       {/* Background gradient */}
       <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" />
-
-      <div className="relative z-10 container mx-auto px-6 py-8">
         {/* Header */}
+        <div className="relative z-10 container mx-auto px-6 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -138,6 +138,13 @@ export default function Home() {
             </Card>
           </div>
         </div>
+        </div>
+  
+
+
+      <ScrollArea className='w-full h-[65vh]'>
+      <div className="relative z-10 container mx-auto px-6 py-8">
+
 
         {/* Active/In Progress Tasks */}
         {activeTasks.length > 0 && (
@@ -150,7 +157,7 @@ export default function Home() {
               </Badge>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-4 grid-cols-2">
               {activeTasks.map(task => (
                 <TaskItem
                   key={task.id}
@@ -177,7 +184,7 @@ export default function Home() {
               </Badge>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-4 grid-cols-2">
               {completedTasks.map(task => (
                 <TaskItem
                   key={task.id}
@@ -211,8 +218,13 @@ export default function Home() {
         )}
       </div>
 
-      {/* Full screen timer */}
-      {activeTask && (
+      </ScrollArea>
+
+      <div className='w-full h-full overflow-hidden'>
+
+    
+            {/* Full screen timer */}
+            {activeTask && (
         <TimerScreen
           task={activeTask}
           onClose={() => setActiveTask(null)}
@@ -228,6 +240,7 @@ export default function Home() {
           onUpdateTask={updateTask}
         />
       )}
+        </div>
     </div>
   );
 }

@@ -199,7 +199,6 @@
 
 
 html,
-body {
-  overflow: hidden; /* disables scrollbars */
+body {/* disables scrollbars */
   height: 100%;     /* ensures full page height */
 }

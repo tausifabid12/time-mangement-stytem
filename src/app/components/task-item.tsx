@@ -59,7 +59,7 @@ export const TaskItem = ({ task, onStart, onComplete, onDelete }: TaskItemProps)
                 }}
             />
 
-            <CardContent className="p-6 relative z-10">
+            <CardContent className="p-4 py-2 relative z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
