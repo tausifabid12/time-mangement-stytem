@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { Clock, Target, CircleCheck as CheckCircle, TrendingUp, Calendar } from 'lucide-react';
+import { Clock, Target, CircleCheck as CheckCircle, TrendingUp, Calendar, Clock10 } from 'lucide-react';
 import { formatTime, secondsToMinutes } from './lib/time-utils';
 import { Separator } from '@/components/ui/separator';
 import { Task } from './types/task';
@@ -14,6 +14,8 @@ import { TaskItem } from './components/task-item';
 import { TimerScreen } from './components/timer-screen';
 import { useTasks } from './hooks/use-tasks';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const { tasks, addTask, updateTask, deleteTask } = useTasks();
@@ -74,7 +76,22 @@ export default function Home() {
               </h1>
               <p className="text-gray-400 text-lg mt-2">Focus. Track. Achieve.</p>
             </div>
-            <CreateTaskModal onCreateTask={addTask} />
+            
+<div className='space-x-2'>
+              <Link href="/planer">
+                <Button
+
+                  className='cursor-pointer py-5'
+                  variant={"outline"}
+
+                >
+                  <Clock10 className="w-5 h-5 mr-2" />
+                 Weekly Planer
+                </Button>
+              </Link>
+              <CreateTaskModal onCreateTask={addTask} />
+            </div>
+            
           </div>
 
           {/* Stats cards */}
