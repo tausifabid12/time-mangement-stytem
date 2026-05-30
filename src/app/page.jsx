@@ -759,11 +759,11 @@ function FloatingTimer() {
       {/* Floating timer card */}
       <div style={{
         position: "fixed",
-        left: "50%", top: "50%",          // always vertically + horizontally centered
+        left: "50%", top: "50%",
         bottom: "auto",
         transform: "translate(-50%, -50%)",
         zIndex: 99,
-        width: timerMinimized ? "min(360px, calc(100vw - 32px))" : "min(460px, calc(100vw - 32px))",
+        width: timerMinimized ? "min(260px, calc(100vw - 24px))" : "min(460px, calc(100vw - 32px))",
         transition: "all 0.25s cubic-bezier(.4,0,.2,1)"
       }}>
         <div style={{
@@ -774,62 +774,65 @@ function FloatingTimer() {
 
           {/* Header row */}
           <div style={{
-            display: "flex", alignItems: "center", gap: 10,
-            padding: "12px 16px", borderBottom: `1px solid ${C.border}`
+            display: "flex", alignItems: "center", gap: 8,
+            padding: timerMinimized ? "6px 10px" : "12px 16px",
+            borderBottom: `1px solid ${C.border}`
           }}>
             <div style={{
-              width: 8, height: 8, borderRadius: "50%",
+              width: 6, height: 6, borderRadius: "50%",
               background: timerRunning ? C.green : C.dim,
-              boxShadow: timerRunning ? `0 0 8px ${C.green}` : "none",
+              boxShadow: timerRunning ? `0 0 6px ${C.green}` : "none",
               animation: timerRunning ? "pulse 1.5s infinite" : "none", flexShrink: 0
             }} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
-                fontSize: 12, fontWeight: 600, color: C.text,
+                fontSize: timerMinimized ? 11 : 12, fontWeight: 600, color: C.text,
                 overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
               }}>
                 {task?.title || "Focus Session"}
               </div>
-              <div style={{ fontSize: 11, color: C.muted }}>
-                {fmt(Math.ceil(timerTotal / 60000))} session
-              </div>
+              {!timerMinimized && (
+                <div style={{ fontSize: 11, color: C.muted }}>
+                  {fmt(Math.ceil(timerTotal / 60000))} session
+                </div>
+              )}
             </div>
-            <div style={{ display: "flex", gap: 4 }}>
+            <div style={{ display: "flex", gap: 2 }}>
               <Btn variant="ghost" size="icon" onClick={A.toggleDeepFocus}
-                title={deepFocus ? "Exit deep focus" : "Deep focus"} style={{ padding: 5 }}>
-                <Icon d={I.moon} size={13} color={deepFocus ? C.accent : C.dim} />
+                title={deepFocus ? "Exit deep focus" : "Deep focus"} style={{ padding: 4 }}>
+                <Icon d={I.moon} size={11} color={deepFocus ? C.accent : C.dim} />
               </Btn>
               <Btn variant="ghost" size="icon" onClick={A.toggleMinimized}
-                title={timerMinimized ? "Expand" : "Minimize"} style={{ padding: 5 }}>
-                <Icon d={timerMinimized ? I.max : I.min} size={13} color={C.dim} />
+                title={timerMinimized ? "Expand" : "Minimize"} style={{ padding: 4 }}>
+                <Icon d={timerMinimized ? I.max : I.min} size={11} color={C.dim} />
               </Btn>
               <Btn variant="ghost" size="icon" onClick={A.stopTimer}
-                title="Stop session" style={{ padding: 5 }}>
-                <Icon d={I.x} size={13} color={C.dim} />
+                title="Stop session" style={{ padding: 4 }}>
+                <Icon d={I.x} size={11} color={C.dim} />
               </Btn>
             </div>
           </div>
 
           {timerMinimized ? (
             /* ---- MINIMIZED STRIP ---- */
-            <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px" }}>
               <span style={{
-                fontSize: 28, fontFamily: "monospace", fontWeight: 700,
-                letterSpacing: "-0.03em", color: timerColor, lineHeight: 1
+                fontSize: 20, fontFamily: "monospace", fontWeight: 700,
+                letterSpacing: "-0.03em", color: timerColor, lineHeight: 1, flexShrink: 0
               }}>
                 {fmtMs(live)}
               </span>
               <div style={{ flex: 1 }}>
-                <ProgressBar value={progress} color={borderColor} height={4} />
+                <ProgressBar value={progress} color={borderColor} height={3} />
               </div>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                 <Btn variant="primary" size="icon"
-                  onClick={timerRunning ? A.pauseTimer : A.resumeTimer} style={{ padding: "6px 10px" }}>
-                  <Icon d={timerRunning ? I.pause : I.play} size={13} color="#fff" />
+                  onClick={timerRunning ? A.pauseTimer : A.resumeTimer} style={{ padding: "4px 8px" }}>
+                  <Icon d={timerRunning ? I.pause : I.play} size={11} color="#fff" />
                 </Btn>
                 <Btn variant="outline" size="icon"
-                  onClick={A.stopTimer} style={{ padding: "6px 10px" }}>
-                  <Icon d={I.stop} size={13} color={C.text} />
+                  onClick={A.stopTimer} style={{ padding: "4px 8px" }}>
+                  <Icon d={I.stop} size={11} color={C.text} />
                 </Btn>
               </div>
             </div>
