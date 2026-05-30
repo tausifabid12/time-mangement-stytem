@@ -759,10 +759,11 @@ function FloatingTimer() {
       {/* Floating timer card */}
       <div style={{
         position: "fixed",
-        left: "50%", top: timerMinimized ? "auto" : "50%",
-        bottom: timerMinimized ? 24 : "auto",
-        transform: timerMinimized ? "translateX(-50%)" : "translate(-50%,-50%)",
-        zIndex: 99, width: timerMinimized ? 360 : 460,
+        left: "50%", top: "50%",          // always vertically + horizontally centered
+        bottom: "auto",
+        transform: "translate(-50%, -50%)",
+        zIndex: 99,
+        width: timerMinimized ? "min(360px, calc(100vw - 32px))" : "min(460px, calc(100vw - 32px))",
         transition: "all 0.25s cubic-bezier(.4,0,.2,1)"
       }}>
         <div style={{
